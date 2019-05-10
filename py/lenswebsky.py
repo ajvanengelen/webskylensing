@@ -12,7 +12,7 @@ import get_cmb_powerspectra
 p = flipperDict.flipperDict()
 p.read_from_file('lenswebsky.dict')
 
-do_all = True
+do_all = False
 if do_all:
 
 
@@ -43,7 +43,7 @@ if do_all:
 
     phi_alm = healpy.sphtfunc.almxfl(kappa_alms, func)
     
-    cmb_powers = get_cmb_powerspectra.websky_cmb_spectra()
+    cmb_powers = get_cmb_powerspectra.websky_cmb_spectra()['unlensed_scalar']
 
     cmb_alm, cmb_ainfo = curvedsky.rand_alm(cmb_powers, lmax = lmax, seed = 0, return_ainfo = True)
 
@@ -88,4 +88,48 @@ plt.clf()
 plt.imshow(np.flipud(len_cutout), clim = crange)
 plt.savefig('../plot/len_cutout.png', dpi = 500)
 plt.colorbar()
+
+cmb_cl_unlensed = healpy.alm2cl(cmb_alm)
+cmb_cl_lensed = healpy.alm2cl(cmb_alm_lensed)
+
+plt.figure('powerspec', figsize = (10,10))
+plt.clf()
+plt.subplot(2, 1, 1)
+
+theory_powers = get_cmb_powerspectra.websky_cmb_spectra()
+
+# for si, spec in enumerate([cmb_cl_lensed, cmb_cl_unlensed]):
+for ii in range(2):
+    line, = plt.plot(cmb_cl_lensed[ii] / cmb_cl_unlensed[ii], 
+                        marker = 'o', markersize = .2, linestyle = 'None')
+
+    plt.plot(theory_powers['lensed_scalar'][ii, ii, :] / theory_powers['unlensed_scalar'][ii, ii, :],
+                 color = line.get_color(), label = ['TT', 'EE'][ii])
+
+    plt.axhline(1., linestyle = 'dashed', color = '.5')
+
+
+plt.ylim([.8, 1.4])
+plt.xlim([0,5000])
+plt.legend()
+plt.ylabel('lensed power / unlensed power')
+plt.xlabel('l')
+
+plt.subplot(2, 1, 2)
+ii = 2
+line, = plt.plot(cmb_cl_lensed[ii] , 
+                        marker = 'o', markersize = .2, linestyle = 'None', color = 'red')
+
+plt.plot(theory_powers['lensed_scalar'][ii, ii, :] ,
+         color = line.get_color(), label = 'BB')
+
+
+plt.xlim([0,5000])
+plt.legend()
+plt.ylabel('$C_l^{BB}$ (uK$^2$)')
+plt.xlabel('l')
+
+plt.ylim([0, (6. * (np.pi / 180. / 60.))**2])
+
+plt.savefig('../plot/lens_power_check.png', dpi = 300)
 

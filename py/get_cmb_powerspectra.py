@@ -39,7 +39,7 @@ def websky_cmb_spectra():
         ns = websky_params['n_s'],
         r=0)
 
-    pars.set_for_lmax(10000, lens_potential_accuracy=0)
+    pars.set_for_lmax(10000, lens_potential_accuracy=2)
 
 
     results = camb.get_results(pars)
@@ -47,18 +47,28 @@ def websky_cmb_spectra():
     powers =results.get_cmb_power_spectra(pars, CMB_unit='muK')
     for name in powers: print(name)
 
-    to_use = powers['unlensed_scalar']
+    power_types = ['unlensed_scalar', 'lensed_scalar']
 
-    input_power = np.zeros((3, 3, to_use.shape[0]))
+    output = {}
 
-    ells = np.arange(to_use.shape[0])
-    camb_factor = np.append([0], 2. * np.pi / (ells[1:] * (ells[1:] + 1) ))
+    for power_type in power_types:
+        power = powers[power_type]
+
+        output[power_type] = np.zeros((3, 3, power.shape[0]))
+
+        ells = np.arange(power.shape[0])
+        camb_factor = np.append([0], 2. * np.pi / (ells[1:] * (ells[1:] + 1) ))
 
 
-    input_power[0,0,:] = to_use[:,0] * camb_factor #TT
-    input_power[1,1,:] = to_use[:,1] * camb_factor #EE
-    input_power[1,0,:] = to_use[:,3] * camb_factor #TE
-    input_power[0,1,:] = to_use[:,3] * camb_factor #EE
-    
-    return input_power
+        output[power_type][0,0,:] = power[:,0] * camb_factor #TT
+        output[power_type][1,1,:] = power[:,1] * camb_factor #EE
+        output[power_type][1,0,:] = power[:,3] * camb_factor #TE
+        output[power_type][0,1,:] = power[:,3] * camb_factor #TE
+
+        output[power_type][2,2,:] = power[:,2] * camb_factor #BB
+
+
+    # pdb.set_trace()
+
+    return output
 

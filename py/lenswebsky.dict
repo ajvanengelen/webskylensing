@@ -3,7 +3,7 @@
 
 websky_dir = '/project/projectdirs/sobs/v4_sims/mbs/websky/0.3/'
 
-kappa_map_name = 'kap_cmb.fits'
+kappa_map_name = 'kap.fits.1'
 
 PIX_SIZE_ARCMIN = 1 #arcminutes
 
