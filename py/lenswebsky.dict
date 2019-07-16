@@ -3,8 +3,8 @@
 
 websky_dir = '/project/projectdirs/sobs/v4_sims/mbs/websky/0.3/'
 
-kappa_map_name = 'kap.fits.1'
-
+kappa_map_name = 'kap.fits'
+isw_map_name = 'isw.fits'
 PIX_SIZE_ARCMIN = 1 #arcminutes
 
 outdir = '/global/cscratch1/sd/engelen/webskylensing/data/'

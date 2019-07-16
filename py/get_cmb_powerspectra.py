@@ -18,7 +18,7 @@ def websky_cosmology():
 
     return output
 
-def websky_cmb_spectra():
+def websky_cmb_spectra(return_lensing = False):
 
 
     websky_params = websky_cosmology()
@@ -67,6 +67,13 @@ def websky_cmb_spectra():
 
         output[power_type][2,2,:] = power[:,2] * camb_factor #BB
 
+
+    if return_lensing:
+        output['lens_potential']  = powers['lens_potential']        
+        
+        # pdb.set_trace()
+        # output['lens_potential'][0,0,:] = powers['unlensed_scalar'][:, 0] * camb_factor
+        # output['lens_potential'][0,0,:] = powers['unlensed_scalar'][:, 0] * camb_factor
 
     # pdb.set_trace()
 
