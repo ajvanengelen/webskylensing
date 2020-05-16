@@ -18,7 +18,7 @@ def websky_cosmology():
 
     return output
 
-def websky_cmb_spectra(return_lensing = False):
+def websky_cmb_spectra(return_lensing = False, return_tensors = False):
 
 
     websky_params = websky_cosmology()
@@ -34,10 +34,13 @@ def websky_cmb_spectra(return_lensing = False):
         omk = 0,
         tau = 0.055)
 
+    if return_tensors:
+        pars.WantTensors = True
+        
     pars.InitPower.set_params(
         websky_params['A_s'],
         ns = websky_params['n_s'],
-        r=0)
+        r= (0 if (not return_tensors) else 1) )
 
     pars.set_for_lmax(10000, lens_potential_accuracy=2)
 
@@ -47,7 +50,7 @@ def websky_cmb_spectra(return_lensing = False):
     powers =results.get_cmb_power_spectra(pars, CMB_unit='muK')
     for name in powers: print(name)
 
-    power_types = ['unlensed_scalar', 'lensed_scalar']
+    power_types = ['unlensed_scalar', 'lensed_scalar', 'tensor']
 
     output = {}
 
