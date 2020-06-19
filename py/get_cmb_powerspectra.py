@@ -40,7 +40,7 @@ def websky_cmb_spectra(return_lensing = False, return_tensors = False):
     pars.InitPower.set_params(
         websky_params['A_s'],
         ns = websky_params['n_s'],
-        r= (0 if (not return_tensors) else 1) )
+        r= (0 if (not return_tensors) else 1) , nt = 0)
 
     pars.set_for_lmax(10000, lens_potential_accuracy=2)
 

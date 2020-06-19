@@ -8,14 +8,17 @@ from pixell import  curvedsky, enmap, utils, lensing, sharp
 import numpy as np
 import get_cmb_powerspectra
 
+plotloc = '/project/projectdirs/sobs/www/users/engelen/'
 
 p = flipperDict.flipperDict()
 p.read_from_file('lenswebsky.dict')
 
-do_all = False
+do_all = True
 if do_all:
 
-
+    print 'grabbing kappa map from', \
+        healpy.read_map(p['websky_dir'] + p['kappa_map_name'])
+    
     kappa_map_hp = healpy.read_map(p['websky_dir'] + p['kappa_map_name'])
 
 
@@ -45,7 +48,7 @@ if do_all:
     
     cmb_powers = get_cmb_powerspectra.websky_cmb_spectra()['unlensed_scalar']
 
-    cmb_alm, cmb_ainfo = curvedsky.rand_alm(cmb_powers, lmax = lmax, seed = 0, return_ainfo = True)
+    cmb_alm, cmb_ainfo = curvedsky.rand_alm(cmb_powers, lmax = lmax, seed = 1, return_ainfo = True)
 
     unlensed_map, lensed_map = lensing.lens_map_curved((3,) + shape, wcs, phi_alm, cmb_alm, ainfo, output = 'ul')
 
@@ -54,10 +57,10 @@ if do_all:
     
 
     healpy.fitsfunc.write_alm(p['outdir'] + 'lensed_alm.fits',
-                              np.complex64(cmb_alm_lensed), overwrite = True)
+                              np.complex128(cmb_alm_lensed), overwrite = True)
 
     healpy.fitsfunc.write_alm(p['outdir'] + 'unlensed_alm.fits',
-                              np.complex64(cmb_alm), overwrite = True)
+                              np.complex128(cmb_alm), overwrite = True)
 
     
 
@@ -80,13 +83,13 @@ len_cutout = lensed_map[0, shape[0] / 2 - int(np.rint(degs * 60 / p['PIX_SIZE_AR
 plt.figure('unl_map', figsize = (10,10))
 plt.clf()
 plt.imshow(np.flipud(unl_cutout), clim = crange)
-plt.savefig('../plot/unl_cutout.png', dpi = 500)
+plt.savefig(plotloc + 'unl_cutout.png', dpi = 500)
 plt.colorbar()
 
 plt.figure('len_map', figsize = (10,10))
 plt.clf()
 plt.imshow(np.flipud(len_cutout), clim = crange)
-plt.savefig('../plot/len_cutout.png', dpi = 500)
+plt.savefig(plotloc + 'len_cutout.png', dpi = 500)
 plt.colorbar()
 
 cmb_cl_unlensed = healpy.alm2cl(cmb_alm)
@@ -131,5 +134,5 @@ plt.xlabel('l')
 
 plt.ylim([0, (6. * (np.pi / 180. / 60.))**2])
 
-plt.savefig('../plot/lens_power_check.png', dpi = 300)
+plt.savefig(plotloc + 'lens_power_check.png', dpi = 300)
 

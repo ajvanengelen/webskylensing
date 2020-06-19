@@ -1,7 +1,8 @@
 
 
-
-websky_dir = '/project/projectdirs/sobs/v4_sims/mbs/websky/0.3/'
+#this was used for the runs of summer 2019.  k
+# websky_dir = '/project/projectdirs/sobs/v4_sims/mbs/websky/0.3/'
+websky_dir = '/global/cscratch1/sd/engelen/webskylensing/0.4/'
 
 kappa_map_name = 'kap.fits'
 isw_map_name = 'isw.fits'
